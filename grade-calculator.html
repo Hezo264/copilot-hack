@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Grade Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 0.95em;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+            font-size: 0.95em;
+        }
+
+        input[type="text"],
+        input[type="number"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="text"]:focus,
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .grades-container {
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .grades-container h3 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+
+        .grade-input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .grade-input-group input {
+            flex: 1;
+        }
+
+        .btn-remove {
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s ease;
+        }
+
+        .btn-remove:hover {
+            background: #ff5252;
+        }
+
+        .btn-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-add {
+            background: #51cf66;
+            color: white;
+        }
+
+        .btn-add:hover {
+            background: #40c057;
+            transform: translateY(-2px);
+        }
+
+        .btn-calculate {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-calculate:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+        }
+
+        .btn-reset {
+            background: #a9b3ff;
+            color: white;
+        }
+
+        .btn-reset:hover {
+            background: #9ba3dd;
+        }
+
+        .result {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 10px;
+            text-align: center;
+            margin-top: 20px;
+            display: none;
+            animation: slideIn 0.5s ease;
+        }
+
+        .result.show {
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .emoji {
+            font-size: 3em;
+            margin-bottom: 15px;
+        }
+
+        .student-name {
+            font-size: 1.3em;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .average-score {
+            font-size: 2.5em;
+            font-weight: bold;
+            margin: 15px 0;
+        }
+
+        .grade-letter {
+            font-size: 1.5em;
+            margin-top: 10px;
+            font-weight: 600;
+        }
+
+        .grade-description {
+            font-size: 0.95em;
+            margin-top: 10px;
+            opacity: 0.9;
+        }
+
+        .error {
+            background: #ff6b6b;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            display: none;
+            animation: slideIn 0.5s ease;
+        }
+
+        .error.show {
+            display: block;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .stat-box {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-label {
+            font-size: 0.85em;
+            opacity: 0.85;
+            margin-bottom: 5px;
+        }
+
+        .stat-value {
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 25px;
+            }
+
+            .header h1 {
+                font-size: 2em;
+            }
+
+            .emoji {
+                font-size: 2.5em;
+            }
+
+            .average-score {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📚 Grade Calculator</h1>
+            <p>Calculate your student's average grade</p>
+        </div>
+
+        <form id="gradeForm">
+            <div class="form-group">
+                <label for="studentName">Student Name</label>
+                <input type="text" id="studentName" placeholder="Enter student name" required>
+            </div>
+
+            <div class="grades-container">
+                <h3>Subject Grades</h3>
+                <div id="gradesInputs">
+                    <div class="grade-input-group">
+                        <input type="text" class="subject-name" placeholder="Subject name (e.g., Math)">
+                        <input type="number" class="subject-grade" placeholder="Grade (0-100)" min="0" max="100">
+                        <button type="button" class="btn-remove" onclick="removeGrade(this)">✕</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="btn-container">
+                <button type="button" class="btn btn-add" onclick="addGrade()">+ Add Subject</button>
+                <button type="button" class="btn btn-reset" onclick="resetForm()">Reset</button>
+            </div>
+
+            <button type="submit" class="btn btn-calculate">Calculate Grade</button>
+        </form>
+
+        <div class="error" id="error"></div>
+
+        <div class="result" id="result">
+            <div class="emoji" id="emoji"></div>
+            <div class="student-name" id="resultName"></div>
+            <div class="average-score" id="averageScore"></div>
+            <div class="grade-letter" id="gradeLetter"></div>
+            <div class="grade-description" id="gradeDescription"></div>
+            <div class="stats">
+                <div class="stat-box">
+                    <div class="stat-label">Highest</div>
+                    <div class="stat-value" id="highest">-</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Lowest</div>
+                    <div class="stat-value" id="lowest">-</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function addGrade() {
+            const gradesInputs = document.getElementById('gradesInputs');
+            const gradeGroup = document.createElement('div');
+            gradeGroup.className = 'grade-input-group';
+            gradeGroup.innerHTML = `
+                <input type="text" class="subject-name" placeholder="Subject name">
+                <input type="number" class="subject-grade" placeholder="Grade (0-100)" min="0" max="100">
+                <button type="button" class="btn-remove" onclick="removeGrade(this)">✕</button>
+            `;
+            gradesInputs.appendChild(gradeGroup);
+        }
+
+        function removeGrade(button) {
+            const gradesInputs = document.getElementById('gradesInputs');
+            if (gradesInputs.children.length > 1) {
+                button.parentElement.remove();
+            }
+        }
+
+        function resetForm() {
+            document.getElementById('gradeForm').reset();
+            document.getElementById('result').classList.remove('show');
+            document.getElementById('error').classList.remove('show');
+        }
+
+        function getGradeEmoji(average) {
+            if (average >= 90) return '🌟';
+            if (average >= 80) return '⭐';
+            if (average >= 70) return '👍';
+            if (average >= 60) return '📚';
+            return '💪';
+        }
+
+        function getGradeLetter(average) {
+            if (average >= 90) return 'A+';
+            if (average >= 85) return 'A';
+            if (average >= 80) return 'A-';
+            if (average >= 77) return 'B+';
+            if (average >= 73) return 'B';
+            if (average >= 70) return 'B-';
+            if (average >= 67) return 'C+';
+            if (average >= 63) return 'C';
+            if (average >= 60) return 'C-';
+            if (average >= 57) return 'D+';
+            if (average >= 53) return 'D';
+            if (average >= 50) return 'D-';
+            return 'F';
+        }
+
+        function getGradeDescription(average) {
+            if (average >= 90) return 'Outstanding! Excellent work! 🎉';
+            if (average >= 80) return 'Great job! Keep it up! 🚀';
+            if (average >= 70) return 'Good work! You\'re doing well! 💡';
+            if (average >= 60) return 'Satisfactory. Keep studying! 📖';
+            return 'Needs improvement. Keep trying! 🎯';
+        }
+
+        document.getElementById('gradeForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const studentName = document.getElementById('studentName').value.trim();
+            const errorDiv = document.getElementById('error');
+            const resultDiv = document.getElementById('result');
+
+            errorDiv.classList.remove('show');
+            resultDiv.classList.remove('show');
+
+            if (!studentName) {
+                showError('Please enter the student name');
+                return;
+            }
+
+            const gradeInputs = document.querySelectorAll('.subject-grade');
+            const grades = [];
+
+            for (let input of gradeInputs) {
+                const grade = input.value.trim();
+                if (grade === '') {
+                    showError('Please fill in all grade fields');
+                    return;
+                }
+                const numGrade = parseFloat(grade);
+                if (isNaN(numGrade) || numGrade < 0 || numGrade > 100) {
+                    showError('All grades must be between 0 and 100');
+                    return;
+                }
+                grades.push(numGrade);
+            }
+
+            if (grades.length === 0) {
+                showError('Please add at least one grade');
+                return;
+            }
+
+            const average = grades.reduce((a, b) => a + b, 0) / grades.length;
+            const highest = Math.max(...grades);
+            const lowest = Math.min(...grades);
+
+            displayResult(studentName, average, highest, lowest);
+        });
+
+        function showError(message) {
+            const errorDiv = document.getElementById('error');
+            errorDiv.textContent = '❌ ' + message;
+            errorDiv.classList.add('show');
+        }
+
+        function displayResult(name, average, highest, lowest) {
+            const roundedAverage = average.toFixed(2);
+            const emoji = getGradeEmoji(average);
+            const gradeLetter = getGradeLetter(average);
+            const description = getGradeDescription(average);
+
+            document.getElementById('emoji').textContent = emoji;
+            document.getElementById('resultName').textContent = name;
+            document.getElementById('averageScore').textContent = roundedAverage + '%';
+            document.getElementById('gradeLetter').textContent = 'Grade: ' + gradeLetter;
+            document.getElementById('gradeDescription').textContent = description;
+            document.getElementById('highest').textContent = highest;
+            document.getElementById('lowest').textContent = lowest;
+
+            document.getElementById('result').classList.add('show');
+        }
+    </script>
+</body>
+</html>
