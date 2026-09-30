@@ -32,6 +32,7 @@ jobs:
         run: |
           mkdir dist
           cp grade-calculator.html dist/index.html
+          cp robots.txt sitemap.xml dist/
 
       - name: Upload site artifact
         uses: actions/upload-pages-artifact@v3
