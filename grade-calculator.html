@@ -30,6 +30,13 @@
             width: 100%;
         }
 
+        .footer {
+            margin-top: 20px;
+            color: white;
+            font-size: 0.9em;
+            text-align: center;
+        }
+
         .header {
             text-align: center;
             margin-bottom: 30px;
@@ -157,6 +164,18 @@
 
         .btn-reset:hover {
             background: #9ba3dd;
+        }
+
+        .btn-download {
+            width: 100%;
+            margin-top: 10px;
+            background: #20c997;
+            color: white;
+        }
+
+        .btn-download:hover {
+            background: #18a879;
+            transform: translateY(-2px);
         }
 
         .result {
@@ -302,6 +321,7 @@
             </div>
 
             <button type="submit" class="btn btn-calculate">Calculate Grade</button>
+            <button type="button" class="btn btn-download" onclick="downloadApp()">⬇️ Download App</button>
         </form>
 
         <div class="error" id="error"></div>
@@ -324,6 +344,7 @@
             </div>
         </div>
     </div>
+    <footer class="footer">Made with care by <strong>Afro Builders</strong></footer>
 
     <script>
         function addGrade() {
@@ -349,6 +370,34 @@
             document.getElementById('gradeForm').reset();
             document.getElementById('result').classList.remove('show');
             document.getElementById('error').classList.remove('show');
+        }
+
+        function downloadApp() {
+            const appDocument = document.documentElement.cloneNode(true);
+            const gradeGroups = appDocument.querySelectorAll('.grade-input-group');
+
+            gradeGroups.forEach((group, index) => {
+                if (index > 0) {
+                    group.remove();
+                }
+            });
+
+            appDocument.querySelectorAll('input').forEach((input) => {
+                input.removeAttribute('value');
+            });
+            appDocument.querySelector('#result').classList.remove('show');
+            appDocument.querySelector('#error').classList.remove('show');
+
+            const appHtml = '<!DOCTYPE html>\n' + appDocument.outerHTML;
+            const appFile = new Blob([appHtml], { type: 'text/html;charset=utf-8' });
+            const downloadUrl = URL.createObjectURL(appFile);
+            const downloadLink = document.createElement('a');
+            downloadLink.href = downloadUrl;
+            downloadLink.download = 'student-grade-calculator.html';
+            document.body.appendChild(downloadLink);
+            downloadLink.click();
+            downloadLink.remove();
+            URL.revokeObjectURL(downloadUrl);
         }
 
         function getGradeEmoji(average) {
