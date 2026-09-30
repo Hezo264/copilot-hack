@@ -3,7 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Grade Calculator</title>
+    <title>Student Grade Calculator | Afro Builders</title>
+    <meta name="description" content="Calculate student grades and averages across subjects with instant letter grades, performance stats, and encouraging emoji feedback. Free online grade calculator by Afro Builders.">
+    <meta name="application-name" content="Afro Builders Student Grade Calculator">
+    <meta name="theme-color" content="#667eea">
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://hezo264.github.io/copilot-hack/">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Student Grade Calculator | Afro Builders">
+    <meta property="og:description" content="Calculate student averages, letter grades, and performance stats with helpful emoji feedback.">
+    <meta property="og:url" content="https://hezo264.github.io/copilot-hack/">
+    <meta name="twitter:card" content="summary">
+    <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "WebApplication",
+            "name": "Student Grade Calculator",
+            "description": "A free online tool for calculating student grade averages, letter grades, and performance statistics.",
+            "applicationCategory": "EducationalApplication",
+            "operatingSystem": "Any",
+            "url": "https://hezo264.github.io/copilot-hack/",
+            "publisher": {
+                "@type": "Organization",
+                "name": "Afro Builders"
+            }
+        }
+    </script>
     <style>
         * {
             margin: 0;
@@ -28,6 +53,13 @@
             padding: 40px;
             max-width: 500px;
             width: 100%;
+        }
+
+        .footer {
+            margin-top: 20px;
+            color: white;
+            font-size: 0.9em;
+            text-align: center;
         }
 
         .header {
@@ -157,6 +189,18 @@
 
         .btn-reset:hover {
             background: #9ba3dd;
+        }
+
+        .btn-download {
+            width: 100%;
+            margin-top: 10px;
+            background: #20c997;
+            color: white;
+        }
+
+        .btn-download:hover {
+            background: #18a879;
+            transform: translateY(-2px);
         }
 
         .result {
@@ -302,6 +346,7 @@
             </div>
 
             <button type="submit" class="btn btn-calculate">Calculate Grade</button>
+            <button type="button" class="btn btn-download" onclick="downloadApp()">⬇️ Download App</button>
         </form>
 
         <div class="error" id="error"></div>
@@ -324,6 +369,7 @@
             </div>
         </div>
     </div>
+    <footer class="footer">Made with care by <strong>Afro Builders</strong></footer>
 
     <script>
         function addGrade() {
@@ -349,6 +395,34 @@
             document.getElementById('gradeForm').reset();
             document.getElementById('result').classList.remove('show');
             document.getElementById('error').classList.remove('show');
+        }
+
+        function downloadApp() {
+            const appDocument = document.documentElement.cloneNode(true);
+            const gradeGroups = appDocument.querySelectorAll('.grade-input-group');
+
+            gradeGroups.forEach((group, index) => {
+                if (index > 0) {
+                    group.remove();
+                }
+            });
+
+            appDocument.querySelectorAll('input').forEach((input) => {
+                input.removeAttribute('value');
+            });
+            appDocument.querySelector('#result').classList.remove('show');
+            appDocument.querySelector('#error').classList.remove('show');
+
+            const appHtml = '<!DOCTYPE html>\n' + appDocument.outerHTML;
+            const appFile = new Blob([appHtml], { type: 'text/html;charset=utf-8' });
+            const downloadUrl = URL.createObjectURL(appFile);
+            const downloadLink = document.createElement('a');
+            downloadLink.href = downloadUrl;
+            downloadLink.download = 'student-grade-calculator.html';
+            document.body.appendChild(downloadLink);
+            downloadLink.click();
+            downloadLink.remove();
+            URL.revokeObjectURL(downloadUrl);
         }
 
         function getGradeEmoji(average) {

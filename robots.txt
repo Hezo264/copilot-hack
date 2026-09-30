@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://hezo264.github.io/copilot-hack/sitemap.xml
