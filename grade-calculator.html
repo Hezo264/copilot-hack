@@ -50,6 +50,40 @@
             padding: 20px;
         }
 
+        .startup-screen {
+            position: fixed;
+            inset: 0;
+            z-index: 1000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            background: #fff;
+            border: 0;
+            cursor: pointer;
+            font: inherit;
+            opacity: 1;
+            transition: opacity 0.3s ease;
+        }
+
+        .startup-screen.is-hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .startup-brand {
+            color: #d60000;
+            font-size: clamp(2.5rem, 10vw, 4rem);
+            font-weight: 800;
+            letter-spacing: 0.12em;
+        }
+
+        .startup-hint {
+            color: #666;
+            font-size: 0.95rem;
+        }
+
         .container {
             background: white;
             border-radius: 15px;
@@ -321,6 +355,10 @@
     </style>
 </head>
 <body>
+    <button class="startup-screen" id="startupScreen" type="button" aria-label="KABONA startup screen">
+        <span class="startup-brand">KABONA</span>
+        <span class="startup-hint" id="startupHint" hidden>Click or tap to continue</span>
+    </button>
     <div class="container">
         <div class="header">
             <h1>📚 Grade Calculator</h1>
@@ -532,6 +570,20 @@
             navigator.serviceWorker.register('./service-worker.js').catch((error) => {
                 console.error('Offline support could not be enabled.', error);
             });
+        }
+
+        const startupScreen = document.getElementById('startupScreen');
+        const startupParameters = new URLSearchParams(window.location.search);
+        if (startupParameters.has('nativeSplash')) {
+            startupScreen.remove();
+        } else if (startupParameters.has('previewSplash')) {
+            document.getElementById('startupHint').hidden = false;
+            startupScreen.addEventListener('click', () => startupScreen.remove(), { once: true });
+        } else {
+            window.setTimeout(() => {
+                startupScreen.classList.add('is-hidden');
+                window.setTimeout(() => startupScreen.remove(), 300);
+            }, 1800);
         }
     </script>
 </body>
