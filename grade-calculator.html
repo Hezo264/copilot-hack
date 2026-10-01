@@ -7,7 +7,11 @@
     <meta name="description" content="Calculate student grades and averages across subjects with instant letter grades, performance stats, and encouraging emoji feedback. Free online grade calculator by Afro Builders.">
     <meta name="application-name" content="Afro Builders Student Grade Calculator">
     <meta name="theme-color" content="#667eea">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-title" content="Grade Calculator">
     <meta name="robots" content="index, follow">
+    <link rel="manifest" href="./manifest.webmanifest">
+    <link rel="icon" href="./icon.svg" type="image/svg+xml">
     <link rel="canonical" href="https://hezo264.github.io/copilot-hack/">
     <meta property="og:type" content="website">
     <meta property="og:title" content="Student Grade Calculator | Afro Builders">
@@ -522,6 +526,12 @@
             document.getElementById('lowest').textContent = lowest;
 
             document.getElementById('result').classList.add('show');
+        }
+
+        if (window.location.protocol === 'https:' && 'serviceWorker' in navigator) {
+            navigator.serviceWorker.register('./service-worker.js').catch((error) => {
+                console.error('Offline support could not be enabled.', error);
+            });
         }
     </script>
 </body>

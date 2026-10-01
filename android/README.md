@@ -2,6 +2,10 @@
 
 The Android app loads the calculator from a local HTML asset packaged inside the APK. It has no Internet permission and does not need a network connection to calculate grades.
 
+The app targets Android 5.0 (API 21) and newer. On launch, it briefly shows **KABONA** in bold red text before opening the calculator. The APK includes the calculator HTML locally, so calculations do not require an internet connection.
+
+The GitHub Pages version also caches the calculator for offline use after the first successful online visit in a browser that supports service workers.
+
 The HTML source stays in the repository root at `grade-calculator.html`; Gradle copies it into the Android assets directory during the build.
 
 ## Build locally
