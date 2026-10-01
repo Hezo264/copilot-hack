@@ -25,6 +25,11 @@ jobs:
       - name: Check out repository
         uses: actions/checkout@v4
 
+      - name: Validate offline web app
+        run: |
+          node --check service-worker.js
+          python -m json.tool manifest.webmanifest > /dev/null
+
       - name: Configure GitHub Pages
         uses: actions/configure-pages@v5
 
@@ -33,6 +38,7 @@ jobs:
           mkdir dist
           cp grade-calculator.html dist/index.html
           cp robots.txt sitemap.xml dist/
+          cp service-worker.js manifest.webmanifest icon.svg dist/
 
       - name: Upload site artifact
         uses: actions/upload-pages-artifact@v3

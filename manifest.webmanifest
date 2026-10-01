@@ -1,0 +1,19 @@
+{
+  "id": "./",
+  "name": "Afro Builders Student Grade Calculator",
+  "short_name": "Grade Calculator",
+  "description": "Calculate student grades offline with letter grades and emoji feedback.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#667eea",
+  "theme_color": "#667eea",
+  "icons": [
+    {
+      "src": "./icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
