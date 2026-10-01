@@ -77,7 +77,7 @@ public class MainActivity extends Activity {
         }
 
         setContentView(webView);
-        webView.loadUrl("file:///android_asset/index.html");
+        webView.loadUrl("file:///android_asset/index.html?nativeSplash=1");
     }
 
     @Override

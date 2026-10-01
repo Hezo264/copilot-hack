@@ -2,9 +2,35 @@ plugins {
     id "com.android.application"
 }
 
+def releaseSigningEnvironment = [
+    "ANDROID_KEYSTORE_PATH",
+    "ANDROID_KEYSTORE_PASSWORD",
+    "ANDROID_KEY_ALIAS",
+    "ANDROID_KEY_PASSWORD"
+]
+def releaseSigningValues = releaseSigningEnvironment.collectEntries {
+    [(it): System.getenv(it)]
+}
+def hasReleaseSigning = releaseSigningValues.values().every { it }
+if (releaseSigningValues.values().any { it } && !hasReleaseSigning) {
+    throw new GradleException("All Android release signing environment variables must be set.")
+}
+
 android {
     namespace "com.afrobuilders.gradecalculator"
     compileSdk 35
+
+    if (hasReleaseSigning) {
+        signingConfigs {
+            release {
+                storeFile file(releaseSigningValues["ANDROID_KEYSTORE_PATH"])
+                storePassword releaseSigningValues["ANDROID_KEYSTORE_PASSWORD"]
+                keyAlias releaseSigningValues["ANDROID_KEY_ALIAS"]
+                keyPassword releaseSigningValues["ANDROID_KEY_PASSWORD"]
+                storeType "PKCS12"
+            }
+        }
+    }
 
     defaultConfig {
         applicationId "com.afrobuilders.gradecalculator"
@@ -12,6 +38,14 @@ android {
         targetSdk 35
         versionCode 1
         versionName "1.0.0"
+    }
+
+    buildTypes {
+        release {
+            if (hasReleaseSigning) {
+                signingConfig signingConfigs.release
+            }
+        }
     }
 }
 
