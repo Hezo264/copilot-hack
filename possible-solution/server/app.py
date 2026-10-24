@@ -1,65 +1,66 @@
 # Create a base Flask server
 
+import csv
 import pickle
-from flask import Flask, request, jsonify
+from pathlib import Path
+
+from flask import Flask, jsonify, request
+
+BASE_DIR = Path(__file__).resolve().parent
+MODEL_PATH = BASE_DIR / 'model.pkl'
+AIRPORTS_PATH = BASE_DIR / 'airports.csv'
 
 app = Flask(__name__)
 
-# Enable cors
+
 @app.after_request
 def after_request(response):
-    """
-    Enable CORS
-    """
+    """Enable CORS for frontend requests."""
     response.headers.add('Access-Control-Allow-Origin', '*')
     response.headers.add('Access-Control-Allow-Headers', 'Content-Type,Authorization')
     return response
 
 
-# Load model from pickle file
-model = pickle.load(open('model.pkl', 'rb'))
+with MODEL_PATH.open('rb') as model_file:
+    model = pickle.load(model_file)
 
-# Model takes two parameters - day of week and airport id, then returns a prediction of flight delay
+
 @app.route('/predict', methods=['GET'])
 def predict():
-    """
-    Takes two parameters - day of week and airport id, then returns a prediction of flight delay
-    """
-    # Store day_of_week as int
-    day_of_week = int(request.args.get('day_of_week'))
-    airport_id = int(request.args.get('airport_id'))
+    """Return the delay probability and confidence for a given day and airport."""
+    try:
+        day_of_week = int(request.args.get('day_of_week', ''))
+        airport_id = int(request.args.get('airport_id', ''))
+    except (TypeError, ValueError):
+        return jsonify({'error': 'day_of_week and airport_id must be integers'}), 400
+
+    if not 1 <= day_of_week <= 7:
+        return jsonify({'error': 'day_of_week must be between 1 and 7'}), 400
+
+    if not airport_id:
+        return jsonify({'error': 'airport_id is required'}), 400
+
     prediction = model.predict_proba([[day_of_week, airport_id]])[0]
-    
-    # Split prediction string by space
-    prediction = str(prediction).split(' ')
+    delay_probability = float(prediction[1])
+    certainty = float(max(prediction))
 
-    # store first value from prediction as certainty, and remove the first character
-    certainty = float(prediction[0][2:])
+    return jsonify({'certainty': certainty, 'delay': delay_probability})
 
-    # store second value from prediction as delay, and remove the last character
-    delay = float(prediction[1][:-1])
 
-    # return prediction as json
-    return jsonify({'certainty': certainty, 'delay': delay})
-
-# Create a new route called airports with method of get
 @app.route('/airports', methods=['GET'])
 def airports():
-    # Load airports from csv file
-    airports = open('airports.csv', 'r').readlines()
+    """Return the list of airports sorted alphabetically by name."""
+    with AIRPORTS_PATH.open('r', newline='') as airports_file:
+        airport_rows = list(csv.DictReader(airports_file))
 
-    # Remove first line of airports
-    airports.pop(0)
-
-    # Create list with dictionary of airports
-    # First value is id, second is name
-    # Convert id to integer
-    # Remove last character from name
-    airports = [{'id': int(airport.split(',')[0]), 'name': airport.split(',')[1][:-1]} for airport in airports]
-    # Sort by name
-    airports = sorted(airports, key=lambda k: k['name'])
-
+    airports = [
+        {'id': int(row['OriginAirportID']), 'name': row['OriginAirportName']}
+        for row in airport_rows
+        if row.get('OriginAirportID') and row.get('OriginAirportName')
+    ]
+    airports = sorted(airports, key=lambda airport: airport['name'].casefold())
     return jsonify(airports)
+
 
 if __name__ == '__main__':
     app.run(debug=True)
